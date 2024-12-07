@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f7f7f7;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Air Quality Prediction BY ANIDA</h2>
+    <form id="predictionForm" method="POST">
+        <label for="COi">CO AQI:</label>
+        <input type="number" step="any" id="COi" name="COi" required>
+
+        <label for="NOi">NO2 AQI:</label>
+        <input type="number" step="any" id="NOi" name="NOi" required>
+
+        <label for="Temp_AQI">Temperature AQI:</label>
+        <input type="number" step="any" id="Temp_AQI" name="Temp_AQI" required>
+
+        <label for="Humidity_AQI">Humidity AQI:</label>
+        <input type="number" step="any" id="Humidity_AQI" name="Humidity_AQI" required>
+
+        <button type="button" onclick="submitForm()">Predict</button>
+    </form>
+
+    <div class="result" id="resultDiv" style="display: none;">
+        <h3>Prediction Result:</h3>
+        <p id="resultText"></p>
+    </div>
+
+    <script>
+        async function submitForm() {
+            // Get form data
+            const formData = new FormData(document.getElementById('predictionForm'));
+
+            // Send data to the backend
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            // Parse the JSON response
+            const data = await response.json();
+
+            // Display the result
+            const resultDiv = document.getElementById('resultDiv');
+            const resultText = document.getElementById('resultText');
+
+            if (data.status === 'success') {
+                resultText.textContent = `The air quality is predicted as: ${data.prediction}`;
+            } else {
+                resultText.textContent = `Error: ${data.message}`;
+            }
+
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
